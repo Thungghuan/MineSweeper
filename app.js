@@ -2,6 +2,9 @@ var mapRow, mapColumn, mine, mineLeft;
 var first = true;
 var win = false;
 var lost = false;
+var difficultyNum;
+var timeUsed;
+var timeInterval;
 
 var minePosition = {};
 var block = [];
@@ -72,13 +75,16 @@ function createBlocks() {
             block[i][j].style.top = String(blockTop) + "px";
             block[i][j].addEventListener("mousedown", ((e) => {
                 if (first) {
-                    var timeUsed = 1;
-                    setInterval(() => {
+                    timeUsedSpan[0].innerText = ++timeUsed;
+                    timeInterval = setInterval(() => {
+                        if (!win && !lost) ++timeUsed;
                         timeUsedSpan[0].innerText = timeUsed;
-                        if (!win && !lost) timeUsed++;
                     }, 1000);
                     first = false;
                 }
+                // setInterval(() => {
+                //     if (first) timeUsed = 0;
+                // }, 100);
                 if (!lost && !win) blockClick(e.button, i, j);
             }))
             map.appendChild(block[i][j]);
@@ -132,6 +138,10 @@ function init(n) {
 
     mineLeftSpan[0].innerText = String(mineLeft);
     timeUsedSpan[0].innerText = 0;
+    win = false;
+    lost = false;
+    first = true;
+    timeUsed = 0;
     createMines();
     createBlocks();
     findMineNumber();
@@ -194,8 +204,8 @@ function blockClick(btnNum, i, j) {
             break;
     }
     win = gameWin();
-    console.log(win);
-    console.log(lost);
+    // console.log(win);
+    // console.log(lost);
     mineLeftSpan[0].innerText = mineLeft;
     if (lost) {
         setTimeout(() => {
@@ -264,6 +274,7 @@ function gameWin() {
 
 function main(n = 1) {
     init(n);
+    difficultyNum = n;
     console.log(block);
     // console.log(minePosition);
     // console.log(number);
@@ -275,5 +286,6 @@ function main(n = 1) {
 }
 
 function restart() {
-    location.reload();
+    window.clearInterval(timeInterval);
+    init(difficultyNum);
 }
