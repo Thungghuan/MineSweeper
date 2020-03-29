@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer=true></script>
+    <!-- <script src="test.js" defer=true></script> -->
+    <title>MineSweeper</title>
+</head>
+
+<body onload="main()">
+    <div id="game_window">
+        <div id="title">
+            <span>扫雷</span>
+        </div>
+        <div id="menu">
+            <div class="top_bar">游戏</div>
+            <div class="top_bar">帮助</div>
+        </div>
+        <div id="container">
+            <div id="score_bar">
+                <div>还剩:<span class="mine_left"></span></div>
+                <button onclick="restart()">重来</button>
+                <div>用时:<span class="time_used"></span></div>
+            </div>
+            <div id="map"></div>
+        </div>
+    </div>
+</body>
+
+</html>
