@@ -12,8 +12,6 @@ body {
 }
 
 #game_window {
-    width: 200px;
-    height: 285px;
     background-color: rgb(192, 192, 192);
     border: 5px solid rgb(15, 77, 184);
     border-radius: 8px 8px 0px 0px;
@@ -40,13 +38,34 @@ body {
     padding: 2px;
 }
 
-.top_bar:hover {
+.top_bar>span:hover {
     color: white;
     cursor: pointer;
     background-color: blue;
 }
 
+#game_menu {
+    position: absolute;
+    width: 50px;
+    background-color: rgb(128, 128, 128);
+    border: 1px solid black;
+    display: none;
+}
+
+#game:hover #game_menu {
+    display: block;
+    color: black;
+    z-index: 1000;
+}
+
+#game_menu>div:hover {
+    /* border-top: 1px solid black;
+    border-bottom: 1px solid black; */
+    border: 1px solid black;
+}
+
 #container {
+    /* position: absolute; */
     background-color: rgb(192, 192, 192);
     width: 190px;
     height: 230px;

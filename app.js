@@ -1,20 +1,21 @@
-var mapRow = 9;
-var mapColumn = 9;
-var mine = 10;
+var mapRow, mapColumn, mine, mineLeft;
 var first = true;
 var win = false;
 var lost = false;
 
-var mineLeft = mine;
 var minePosition = {};
 var block = [];
 var number = [];
 
 var rightBtnStyle = ["block", "flag_block"];
 
+var gameWindow = document.getElementById("game_window");
+var menu = document.getElementById("menu");
+var container = document.getElementById("container");
+var scoreBar = document.getElementById("score_bar");
+var map = document.getElementById('map');
 var mineLeftSpan = document.getElementsByClassName("mine_left");
 var timeUsedSpan = document.getElementsByClassName("time_used");
-var map = document.getElementById('map');
 
 var searchMove = [
     [-1, 0], //往上搜索
@@ -28,6 +29,24 @@ var searchMove = [
 ]
 var searchResult = [];
 
+var difficulty = {
+    1: {
+        row: 9,
+        column: 9,
+        mine: 10
+    },
+    2: {
+        row: 16,
+        column: 16,
+        mine: 40
+    },
+    3: {
+        row: 16,
+        column: 30,
+        mine: 99
+    }
+
+}
 
 function createMines() {
     for (let i = 0; i < mine; ++i) {
@@ -79,16 +98,38 @@ function findMineNumber() {
     }
 }
 
-function init() {
+function chooseDifficulty(n) {
+    mapRow = difficulty[n]['row'];
+    mapColumn = difficulty[n]['column'];
+    mine = difficulty[n]['mine'];
+    mineLeft = mine;
+}
+
+function init(n) {
     document.oncontextmenu = ((e) => { e.preventDefault(); });
+    chooseDifficulty(n);
+    number = [];
+    searchResult = [];
+    block = [];
+    map.innerHTML = "";
     for (let i = 0; i < mapRow + 2; ++i) {
         number[i] = [];
         searchResult[i] = [];
+        block[i] = [];
         for (let j = 0; j < mapColumn + 2; ++j) {
             number[i][j] = 0;
             searchResult[i][j] = 0;
+            block[i][j] = 0;
         }
     }
+    gameWindow.style.width = String(20 + mapColumn * 20) + "px";
+    gameWindow.style.height = String(105 + mapRow * 20) + "px";
+    container.style.width = String(10 + mapColumn * 20) + "px";
+    container.style.height = String(50 + mapRow * 20) + "px";
+    scoreBar.style.width = String(mapColumn * 20) + "px";
+    map.style.width = String(mapColumn * 20) + "px";
+    map.style.height = String(mapRow * 20) + "px";
+
     mineLeftSpan[0].innerText = String(mineLeft);
     timeUsedSpan[0].innerText = 0;
     createMines();
@@ -168,14 +209,6 @@ function blockClick(btnNum, i, j) {
     }
 }
 
-// function findAround(row, column) {
-//     for (let i = row - 1; i <= row + 1; ++i) {
-//         for (let j = column - 1; j <= column + 1; ++j) {
-//             if (searchResult[i][j] != 1) searchResult[i][j] = 1;
-//         }
-//     }
-// }
-
 function searchZero(row, column) {
     zeroClick(row, column);
     var nextRow, nextColumn;
@@ -229,9 +262,10 @@ function gameWin() {
     return true;
 }
 
-function main() {
-    init();
-    console.log(minePosition);
+function main(n = 1) {
+    init(n);
+    console.log(block);
+    // console.log(minePosition);
     // console.log(number);
     // for (let i = 1; i <= mapRow; ++i) {
     //     for (let j = 1; j <= mapColumn; ++j) {
