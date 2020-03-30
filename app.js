@@ -51,16 +51,17 @@ var difficulty = {
 
 }
 
-function createMines() {
+function createMines(firstRow, firstColumn) {
     for (let i = 0; i < mine; ++i) {
         var mineRow, mineColumn;
         do {
             mineRow = 1 + parseInt(Math.random() * mapRow);
             mineColumn = 1 + parseInt(Math.random() * mapColumn);
-        } while (number[mineRow][mineColumn] != 0);
+        } while (number[mineRow][mineColumn] != 0 || (mineRow === firstRow && mineColumn === firstColumn));
         number[mineRow][mineColumn] = 9;
         minePosition[i] = [mineRow, mineColumn];
     }
+    // console.log(minePosition);
 }
 
 function createBlocks() {
@@ -75,7 +76,9 @@ function createBlocks() {
             block[i][j].style.top = String(blockTop) + "px";
             block[i][j].addEventListener("mousedown", ((e) => {
                 if (first) {
-                    timeUsedSpan[0].innerText = ++timeUsed;
+                    createMines(i, j);
+                    findMineNumber();
+                    timeUsedSpan[0].innerText = timeUsed;
                     timeInterval = setInterval(() => {
                         if (!win && !lost) ++timeUsed;
                         timeUsedSpan[0].innerText = timeUsed;
@@ -142,9 +145,7 @@ function init(n) {
     lost = false;
     first = true;
     timeUsed = 0;
-    createMines();
     createBlocks();
-    findMineNumber();
 }
 
 function blockClick(btnNum, i, j) {
@@ -257,7 +258,7 @@ function zeroClick(row, column) {
 function gameOver() {
     lost = true;
     for (let position in minePosition) {
-        console.log(minePosition[position]);
+        // console.log(minePosition[position]);
         block[minePosition[position][0]][minePosition[position][1]].className = "mine_block";
     }
 }
@@ -275,8 +276,7 @@ function gameWin() {
 function main(n = 1) {
     init(n);
     difficultyNum = n;
-    console.log(block);
-    // console.log(minePosition);
+    // console.log(block);
     // console.log(number);
     // for (let i = 1; i <= mapRow; ++i) {
     //     for (let j = 1; j <= mapColumn; ++j) {
