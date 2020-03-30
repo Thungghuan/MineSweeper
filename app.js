@@ -5,20 +5,23 @@ var lost = false;
 var difficultyNum;
 var timeUsed;
 var timeInterval;
+var missFlagged = true;
 
 var minePosition = {};
 var block = [];
 var number = [];
 
-var rightBtnStyle = ["block", "flag_block"];
+var rightBtnStyle = ["block", "flag_block", "question_block"];
 
 var gameWindow = document.getElementById("game_window");
 var menu = document.getElementById("menu");
 var container = document.getElementById("container");
 var scoreBar = document.getElementById("score_bar");
+var restartBtn = document.getElementById("restart_btn");
 var map = document.getElementById('map');
-var mineLeftSpan = document.getElementsByClassName("mine_left");
-var timeUsedSpan = document.getElementsByClassName("time_used");
+
+var mineLeftDisplay = document.getElementById("mine_left");
+var timeUsedDisplay = document.getElementById("time_used");
 
 var searchMove = [
     [-1, 0], //往上搜索
@@ -78,10 +81,9 @@ function createBlocks() {
                 if (first) {
                     createMines(i, j);
                     findMineNumber();
-                    timeUsedSpan[0].innerText = timeUsed;
                     timeInterval = setInterval(() => {
                         if (!win && !lost) ++timeUsed;
-                        timeUsedSpan[0].innerText = timeUsed;
+                        displayTimeUsed();
                     }, 1000);
                     first = false;
                 }
@@ -116,11 +118,14 @@ function chooseDifficulty(n) {
 
 function init(n) {
     document.oncontextmenu = ((e) => { e.preventDefault(); });
+    window.clearInterval(timeInterval);
     chooseDifficulty(n);
     number = [];
     searchResult = [];
     block = [];
     map.innerHTML = "";
+    // mineLeftDisplay.innerHTML = "";
+    // timeUsedDisplay.innerHTML = "";
     for (let i = 0; i < mapRow + 2; ++i) {
         number[i] = [];
         searchResult[i] = [];
@@ -139,12 +144,15 @@ function init(n) {
     map.style.width = String(mapColumn * 20) + "px";
     map.style.height = String(mapRow * 20) + "px";
 
-    mineLeftSpan[0].innerText = String(mineLeft);
-    timeUsedSpan[0].innerText = 0;
+    restartBtn.style.backgroundImage = "url(img/smile.png)";
+    // mineLeftSpan[0].innerText = String(mineLeft);
+    // timeUsedSpan[0].innerText = 0;
     win = false;
     lost = false;
     first = true;
     timeUsed = 0;
+    displayMineLeft();
+    displayTimeUsed();
     createBlocks();
 }
 
@@ -153,25 +161,18 @@ function blockClick(btnNum, i, j) {
         case 0: //左键事件
             if (block[i][j].className != 'block') break; //只有block可以左键点击
             if (number[i][j] === 9) {
-                block[i][j].className = 'mine_block';
-                block[i][j].innerText = "";
-                gameOver();
+                // block[i][j].className = 'mine_block';
+                // block[i][j].innerText = "";
+                gameOver(i, j);
             } //左键点击雷
             else {
                 block[i][j].className = "under_block"; //左键点击安全格
                 if (number[i][j] === 0) {
                     searchResult[i][j] = 1;
-                    searchZero(i, j);
-                    // for (let i = 1; i <= mapRow; ++i) {
-                    //     var tempRow = [];
-                    //     for (let j = 1; j <= mapColumn; ++j) {
-                    //         tempRow.push(searchResult[i][j]);
-                    //     }
-                    //     console.log(tempRow);
-                    // }
-                } //点击0时的搜索
-                else {
-                    block[i][j].innerText = number[i][j];
+                    searchZero(i, j)
+                } else {
+                    // block[i][j].innerText = number[i][j];
+                    block[i][j].style.backgroundImage = "url(/img/open" + number[i][j] + ".png)";
                 }
             }
             break;
@@ -191,29 +192,29 @@ function blockClick(btnNum, i, j) {
             for (let index = 0; index < rightBtnStyle.length; ++index) {
                 if (block[i][j].className === rightBtnStyle[index]) blockStyle = index;
             }
+            block[i][j].className = rightBtnStyle[(blockStyle + 1) % 3];
             if (blockStyle === 0) {
                 if (mineLeft > 0) {
-                    block[i][j].className = rightBtnStyle[(blockStyle + 1) % 2];
-                    block[i][j].innerText = "旗";
                     --mineLeft;
                 }
-            } else {
+            } else if (blockStyle === 1) {
                 ++mineLeft;
-                block[i][j].className = rightBtnStyle[(blockStyle + 1) % 2];
-                block[i][j].innerText = "";
             }
             break;
     }
     win = gameWin();
     // console.log(win);
     // console.log(lost);
-    mineLeftSpan[0].innerText = mineLeft;
+    // mineLeftSpan[0].innerText = mineLeft;
+    displayMineLeft();
     if (lost) {
+        restartBtn.style.backgroundImage = "url(img/dead.png)";
         setTimeout(() => {
             alert("Try again!");
         }, 100);
     }
     if (win) {
+        restartBtn.style.backgroundImage = "url(img/win.png)";
         setTimeout(() => {
             alert("Good job!");
         }, 100);
@@ -249,17 +250,32 @@ function zeroClick(row, column) {
             continue;
         }
         if (block[tempRow][tempColumn].className === "block") {
-            block[tempRow][tempColumn].className = "under_block";
-            if (number[tempRow][tempColumn] != 0) block[tempRow][tempColumn].innerText = number[tempRow][tempColumn];
+            // block[tempRow][tempColumn].className = "under_block";
+            // if (number[tempRow][tempColumn] != 0) block[tempRow][tempColumn].innerText = number[tempRow][tempColumn];
+            blockClick(0, tempRow, tempColumn);
         }
     }
 }
 
-function gameOver() {
+function gameOver(clickRow, clickColumn) {
     lost = true;
     for (let position in minePosition) {
-        // console.log(minePosition[position]);
-        block[minePosition[position][0]][minePosition[position][1]].className = "mine_block";
+        if (minePosition[position][0] === clickRow && minePosition[position][1] === clickColumn) {
+            block[minePosition[position][0]][minePosition[position][1]].className = "mine_death";
+        } else if (block[minePosition[position][0]][minePosition[position][1]].className != "flag_block") {
+            block[minePosition[position][0]][minePosition[position][1]].className = "mine_block";
+        }
+    }
+    for (let i = 1; i <= mapRow; ++i) {
+        for (let j = 1; j <= mapColumn; ++j) {
+            if (block[i][j].className === "flag_block") {
+                missFlagged = true;
+                for (let position in minePosition) {
+                    if (minePosition[position][0] === i && minePosition[position][1] === j) missFlagged = false;
+                }
+                if (missFlagged) block[i][j].className = "miss_flagged";
+            }
+        }
     }
 }
 
@@ -286,6 +302,37 @@ function main(n = 1) {
 }
 
 function restart() {
-    window.clearInterval(timeInterval);
     init(difficultyNum);
+}
+
+function displayMineLeft() {
+    mineLeftDisplay.innerHTML = "";
+    var digitImg;
+    var digit = [];
+    digit[0] = parseInt(mineLeft / 100);
+    digit[1] = parseInt(mineLeft % 100 / 10);
+    digit[2] = parseInt(mineLeft % 10);
+    for (let i = 0; i < 3; ++i) {
+        digitImg = document.createElement('img');
+        digitImg.src = "/img/digit" + digit[i] + ".png";
+        digitImg.className = "mine_left";
+        mineLeftDisplay.appendChild(digitImg);
+    }
+}
+
+function displayTimeUsed() {
+    timeUsedDisplay.innerHTML = "";
+    var digitImg;
+    var digit = [];
+    if (timeUsed <= 999) {
+        digit[0] = parseInt(timeUsed / 100);
+        digit[1] = parseInt(timeUsed % 100 / 10);
+        digit[2] = parseInt(timeUsed % 10);
+    } else digit = [9, 9, 9];
+    for (let i = 2; i >= 0; --i) {
+        digitImg = document.createElement('img');
+        digitImg.src = "/img/digit" + digit[i] + ".png";
+        digitImg.className = "time_used";
+        timeUsedDisplay.appendChild(digitImg);
+    }
 }

@@ -20,6 +20,7 @@
     </a>
     <div id="game_window">
         <div id="title">
+            <img src="/img/mine.png">
             <span>扫雷</span>
         </div>
         <div id="menu">
@@ -37,9 +38,17 @@
         </div>
         <div id="container">
             <div id="score_bar">
-                <div>还剩:<span class="mine_left"></span></div>
-                <button onclick="restart()">重来</button>
-                <div>用时:<span class="time_used"></span></div>
+                <div id="mine_left">
+                    <!-- <img src="/img/digit0.png" class="mine_left">
+                    <img src="/img/digit0.png" class="mine_left">
+                    <img src="/img/digit0.png" class="mine_left"> -->
+                </div>
+                <button id="restart_btn" onclick="restart()"></button>
+                <div id="time_used">
+                    <!-- <img src="/img/digit0.png" class="time_used">
+                    <img src="/img/digit0.png" class="time_used">
+                    <img src="/img/digit0.png" class="time_used"> -->
+                </div>
             </div>
             <div id="map"></div>
         </div>

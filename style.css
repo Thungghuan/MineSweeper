@@ -5,6 +5,7 @@
 
 body {
     height: 100vh;
+    font-size: 10px;
     display: flex;
     background-color: #707F80;
     justify-content: center;
@@ -48,16 +49,26 @@ body {
 #title {
     width: 100%;
     height: 25px;
+    font-size: 1.8em;
+    display: flex;
+    align-items: center;
     background-color: rgb(15, 77, 184);
+}
+
+#title img {
+    width: 18px;
+    height: 18px;
 }
 
 #title span {
     color: white;
+    margin: 2px;
 }
 
 #menu {
     width: 100%;
     height: 20px;
+    font-size: 1.5em;
     background-color: rgb(150, 150, 150);
 }
 
@@ -103,6 +114,19 @@ body {
     border-bottom: 5px solid rgb(128, 128, 128);
 }
 
+#restart_btn {
+    height: 25px;
+    width: 25px;
+    background-color: rgb(192, 192, 192);
+    background-image: url(/img/smile.png);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#container:active>#score_bar>button {
+    background-image: url(/img/ohh.png);
+}
+
 #score_bar {
     width: 180px;
     height: 34px;
@@ -114,6 +138,24 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+#mine_left {
+    width: 39px;
+    margin-left: 5px;
+}
+
+#time_used {
+    width: 39px;
+    margin-right: 5px;
+}
+
+.mine_left {
+    float: left;
+}
+
+.time_used {
+    float: right;
 }
 
 #map {
@@ -141,6 +183,7 @@ body {
 .under_block {
     position: absolute;
     cursor: pointer;
+    /* background-image: url(/img/open1.png); */
     width: 18px;
     height: 18px;
     border: 1px solid rgb(88, 88, 88);
@@ -151,7 +194,18 @@ body {
     cursor: pointer;
     width: 18px;
     height: 18px;
-    background-color: red;
+    /* background-color: red; */
+    background-image: url(img/mine-ceil.png);
+    border: 1px solid rgb(88, 88, 88);
+}
+
+.mine_death {
+    position: absolute;
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    /* background-color: red; */
+    background-image: url(img/mine-death.png);
     border: 1px solid rgb(88, 88, 88);
 }
 
@@ -160,6 +214,31 @@ body {
     cursor: pointer;
     width: 16px;
     height: 16px;
+    background-image: url('img/flag.png');
+    border-left: 2px solid rgb(245, 245, 245);
+    border-top: 2px solid rgb(245, 245, 245);
+    border-right: 2px solid rgb(128, 128, 128);
+    border-bottom: 2px solid rgb(128, 128, 128);
+}
+
+.question_block {
+    position: absolute;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    background-image: url('img/question.png');
+    border-left: 2px solid rgb(245, 245, 245);
+    border-top: 2px solid rgb(245, 245, 245);
+    border-right: 2px solid rgb(128, 128, 128);
+    border-bottom: 2px solid rgb(128, 128, 128);
+}
+
+.miss_flagged {
+    position: absolute;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    background-image: url('img/misFlagged.png');
     border-left: 2px solid rgb(245, 245, 245);
     border-top: 2px solid rgb(245, 245, 245);
     border-right: 2px solid rgb(128, 128, 128);
