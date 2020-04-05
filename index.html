@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="img/mine.png">
     <script src="app.js" defer=true></script>
     <!-- <script src="test.js" defer=true></script> -->
     <title>MineSweeper</title>
 </head>
 
 <body onload="main()">
-    <div id='test'></div>
     <a href="https://github.com/Thungghuan/MineSweeper" class="github-corner" aria-label="View source on GitHub">
         <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
             <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
@@ -39,17 +39,9 @@
         </div>
         <div id="container">
             <div id="score_bar">
-                <div id="mine_left">
-                    <!-- <img src="/img/digit0.png" class="mine_left">
-                    <img src="/img/digit0.png" class="mine_left">
-                    <img src="/img/digit0.png" class="mine_left"> -->
-                </div>
+                <div id="mine_left"></div>
                 <button id="restart_btn" onclick="restart()"></button>
-                <div id="time_used">
-                    <!-- <img src="/img/digit0.png" class="time_used">
-                    <img src="/img/digit0.png" class="time_used">
-                    <img src="/img/digit0.png" class="time_used"> -->
-                </div>
+                <div id="time_used"></div>
             </div>
             <div id="map"></div>
         </div>
