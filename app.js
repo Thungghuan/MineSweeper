@@ -4,24 +4,30 @@ var win = false;
 var lost = false;
 var difficultyNum;
 var timeUsed;
-var timeInterval;
+var timeInterval, btnInterval;
 var missFlagged = true;
-
+var leftDown = false,
+    rightDown = false,
+    leftUp = false,
+    rightUp = false;
+var clickRow, clickColumn;
 var minePosition = {};
 var block = [];
 var number = [];
+var unknownBlock = [];
+var flagAround = 0;
 
 var rightBtnStyle = ["block", "flag_block", "question_block"];
 
-var gameWindow = document.getElementById("game_window");
-var menu = document.getElementById("menu");
-var container = document.getElementById("container");
-var scoreBar = document.getElementById("score_bar");
-var restartBtn = document.getElementById("restart_btn");
-var map = document.getElementById('map');
+const gameWindow = document.getElementById("game_window");
+const menu = document.getElementById("menu");
+const container = document.getElementById("container");
+const scoreBar = document.getElementById("score_bar");
+const restartBtn = document.getElementById("restart_btn");
+const map = document.getElementById('map');
 
-var mineLeftDisplay = document.getElementById("mine_left");
-var timeUsedDisplay = document.getElementById("time_used");
+const mineLeftDisplay = document.getElementById("mine_left");
+const timeUsedDisplay = document.getElementById("time_used");
 
 var searchMove = [
     [-1, 0], //往上搜索
@@ -77,9 +83,10 @@ function createBlocks() {
             block[i][j].className = "block";
             block[i][j].style.left = String(blockLeft) + "px";
             block[i][j].style.top = String(blockTop) + "px";
-            block[i][j].addEventListener("mousedown", ((e) => {
+            block[i][j].addEventListener("click", (() => {
+                if (rightDown) return;
                 if (first) {
-                    createMines(i, j);
+                    createMines(clickRow, clickColumn);
                     findMineNumber();
                     timeInterval = setInterval(() => {
                         if (!win && !lost) ++timeUsed;
@@ -87,10 +94,35 @@ function createBlocks() {
                     }, 1000);
                     first = false;
                 }
-                // setInterval(() => {
-                //     if (first) timeUsed = 0;
-                // }, 100);
-                if (!lost && !win) blockClick(e.button, i, j);
+                if (!win && !lost) leftBtnClick(clickRow, clickColumn);
+            }))
+            block[i][j].addEventListener("contextmenu", (() => {
+                if (leftDown) return;
+                if (!win && !lost) rightBtnClick(clickRow, clickColumn);
+            }))
+            block[i][j].addEventListener("mousedown", ((e) => {
+                clickRow = i;
+                clickColumn = j;
+                switch (e.button) {
+                    case 0:
+                        leftDown = true;
+                        break;
+                    case 2:
+                        rightDown = true;
+                        break;
+                }
+            }))
+            block[i][j].addEventListener("mouseup", ((e) => {
+                switch (e.button) {
+                    case 0:
+                        leftDown = false;
+                        leftUp = true;
+                        break;
+                    case 2:
+                        rightDown = false;
+                        rightUp = true;
+                        break;
+                }
             }))
             map.appendChild(block[i][j]);
         }
@@ -118,14 +150,16 @@ function chooseDifficulty(n) {
 
 function init(n) {
     document.oncontextmenu = ((e) => { e.preventDefault(); });
-    window.clearInterval(timeInterval);
+    if (timeInterval) window.clearInterval(timeInterval);
+    if (btnInterval) window.clearInterval(btnInterval);
+    btnInterval = setInterval("btnClick(clickRow, clickColumn)", 50);
     chooseDifficulty(n);
     number = [];
     searchResult = [];
     block = [];
     map.innerHTML = "";
-    // mineLeftDisplay.innerHTML = "";
-    // timeUsedDisplay.innerHTML = "";
+    clickRow = 0;
+    clickColumn = 0;
     for (let i = 0; i < mapRow + 2; ++i) {
         number[i] = [];
         searchResult[i] = [];
@@ -154,71 +188,6 @@ function init(n) {
     displayMineLeft();
     displayTimeUsed();
     createBlocks();
-}
-
-function blockClick(btnNum, i, j) {
-    switch (btnNum) {
-        case 0: //左键事件
-            if (block[i][j].className != 'block') break; //只有block可以左键点击
-            if (number[i][j] === 9) {
-                // block[i][j].className = 'mine_block';
-                // block[i][j].innerText = "";
-                gameOver(i, j);
-            } //左键点击雷
-            else {
-                block[i][j].className = "under_block"; //左键点击安全格
-                if (number[i][j] === 0) {
-                    searchResult[i][j] = 1;
-                    searchZero(i, j)
-                } else {
-                    // block[i][j].innerText = number[i][j];
-                    block[i][j].style.backgroundImage = "url(/img/open" + number[i][j] + ".png)";
-                }
-            }
-            break;
-        case 2: //右键事件
-            if (block[i][j].className === "under_block" || block[i][j].className === "under_block") break; //只有已点开的格子无法右键点击
-            // if (block[i][j].className === "block") {
-            //     block[i][j].innerText = "旗";
-            //     block[i][j].className = "flag_block";
-            //     // block[i][j].removeEventListener("mousedown", ((e) => {
-            //     //     blockClick(e.button, i, j);
-            //     // }))
-            // } else {
-            //     block[i][j].className = "block";
-            //     block[i][j].innerText = "";
-            // }
-            var blockStyle;
-            for (let index = 0; index < rightBtnStyle.length; ++index) {
-                if (block[i][j].className === rightBtnStyle[index]) blockStyle = index;
-            }
-            block[i][j].className = rightBtnStyle[(blockStyle + 1) % 3];
-            if (blockStyle === 0) {
-                if (mineLeft > 0) {
-                    --mineLeft;
-                }
-            } else if (blockStyle === 1) {
-                ++mineLeft;
-            }
-            break;
-    }
-    win = gameWin();
-    // console.log(win);
-    // console.log(lost);
-    // mineLeftSpan[0].innerText = mineLeft;
-    displayMineLeft();
-    if (lost) {
-        restartBtn.style.backgroundImage = "url(img/dead.png)";
-        setTimeout(() => {
-            alert("Try again!");
-        }, 100);
-    }
-    if (win) {
-        restartBtn.style.backgroundImage = "url(img/win.png)";
-        setTimeout(() => {
-            alert("Good job!");
-        }, 100);
-    }
 }
 
 function searchZero(row, column) {
@@ -252,15 +221,15 @@ function zeroClick(row, column) {
         if (block[tempRow][tempColumn].className === "block") {
             // block[tempRow][tempColumn].className = "under_block";
             // if (number[tempRow][tempColumn] != 0) block[tempRow][tempColumn].innerText = number[tempRow][tempColumn];
-            blockClick(0, tempRow, tempColumn);
+            leftBtnClick(tempRow, tempColumn);
         }
     }
 }
 
-function gameOver(clickRow, clickColumn) {
+function gameOver(mineRow, mineColumn) {
     lost = true;
     for (let position in minePosition) {
-        if (minePosition[position][0] === clickRow && minePosition[position][1] === clickColumn) {
+        if (minePosition[position][0] === mineRow && minePosition[position][1] === mineColumn) {
             block[minePosition[position][0]][minePosition[position][1]].className = "mine_death";
         } else if (block[minePosition[position][0]][minePosition[position][1]].className != "flag_block") {
             block[minePosition[position][0]][minePosition[position][1]].className = "mine_block";
@@ -292,13 +261,6 @@ function gameWin() {
 function main(n = 1) {
     init(n);
     difficultyNum = n;
-    // console.log(block);
-    // console.log(number);
-    // for (let i = 1; i <= mapRow; ++i) {
-    //     for (let j = 1; j <= mapColumn; ++j) {
-    //         blockClick(0, i, j);
-    //     }
-    // }
 }
 
 function restart() {
@@ -334,5 +296,94 @@ function displayTimeUsed() {
         digitImg.src = "/img/digit" + digit[i] + ".png";
         digitImg.className = "time_used";
         timeUsedDisplay.appendChild(digitImg);
+    }
+}
+
+function leftBtnClick(row, column) {
+    if (block[row][column].className != 'block' && block[row][column].className != 'under_block') return; //只有block可以左键点击
+    if (number[row][column] === 9) {
+        gameOver(row, column);
+    } //左键点击雷
+    else {
+        block[row][column].className = "under_block"; //左键点击安全格
+        if (number[row][column] === 0) {
+            searchResult[row][column] = 1;
+            searchZero(row, column)
+        } else {
+            block[row][column].style.backgroundImage = "url(/img/open" + number[row][column] + ".png)";
+        }
+    }
+}
+
+function rightBtnClick(row, column) {
+    if (block[row][column].className === "under_block" || block[row][column].className === "under_block") return; //只有已点开的格子无法右键点击
+    var blockStyle;
+    for (let index = 0; index < rightBtnStyle.length; ++index) {
+        if (block[row][column].className === rightBtnStyle[index]) blockStyle = index;
+    }
+    block[row][column].className = rightBtnStyle[(blockStyle + 1) % 3];
+    if (blockStyle === 0) {
+        if (mineLeft > 0) {
+            --mineLeft;
+        }
+    } else if (blockStyle === 1) {
+        ++mineLeft;
+    }
+}
+
+function btnClick(clickRow, clickColumn) {
+    if (!lost && !win) {
+        if (leftDown && rightDown) {
+            for (let i = clickRow - 1; i <= clickRow + 1; ++i) {
+                for (let j = clickColumn - 1; j <= clickColumn + 1; ++j) {
+                    if (i === 0 || j === 0 || i === mapRow + 1 || j === mapColumn + 1) continue;
+                    if (block[i][j].className === "block") {
+                        block[i][j].className = "under_block";
+                        unknownBlock.push([i, j]);
+                    }
+                }
+            }
+            console.log(unknownBlock)
+            if (number[clickRow][clickColumn] != 9 && number[clickRow][clickColumn] != 0 && block[clickRow][clickColumn].className === "under_block") {
+                for (let i = clickRow - 1; i <= clickRow + 1; ++i) {
+                    for (let j = clickColumn - 1; j <= clickColumn + 1; ++j) {
+                        if (i === 0 || j === 0 || i === mapRow + 1 || j === mapColumn + 1) continue;
+                        if (block[i][j].className === "flag_block") flagAround++;
+                    }
+                }
+                if (flagAround === number[clickRow][clickColumn]) {
+                    for (let i = clickRow - 1; i <= clickRow + 1; ++i) {
+                        for (let j = clickColumn - 1; j <= clickColumn + 1; ++j) {
+                            if (i === 0 || j === 0 || i === mapRow + 1 || j === mapColumn + 1) continue;
+                            for (let i = 0; i < unknownBlock.length; ++i) {
+                                leftBtnClick(unknownBlock[i][0], unknownBlock[i][1]);
+                            }
+                        }
+                    }
+                    unknownBlock = [];
+                }
+            }
+            flagAround = 0;
+        }
+        if (leftDown || rightDown) {
+            restartBtn.style.backgroundImage = "url(img/ohh.png)";
+        }
+        if (leftUp || rightUp) {
+            restartBtn.style.backgroundImage = "url(img/smile.png)";
+            for (let i = 0; i < unknownBlock.length; ++i) {
+                block[unknownBlock[i][0]][unknownBlock[i][1]].className = "block";
+            }
+            unknownBlock = [];
+            leftUp = false;
+            rightUp = false;
+        }
+    }
+    win = gameWin();
+    displayMineLeft();
+    if (lost) {
+        restartBtn.style.backgroundImage = "url(img/dead.png)";
+    }
+    if (win) {
+        restartBtn.style.backgroundImage = "url(img/win.png)";
     }
 }

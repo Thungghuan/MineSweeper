@@ -123,10 +123,6 @@ body {
     background-position: center;
 }
 
-#container:active>#score_bar>button {
-    background-image: url(/img/ohh.png);
-}
-
 #score_bar {
     width: 180px;
     height: 34px;
@@ -183,7 +179,7 @@ body {
 .under_block {
     position: absolute;
     cursor: pointer;
-    /* background-image: url(/img/open1.png); */
+    background-size: cover;
     width: 18px;
     height: 18px;
     border: 1px solid rgb(88, 88, 88);
@@ -194,7 +190,7 @@ body {
     cursor: pointer;
     width: 18px;
     height: 18px;
-    /* background-color: red; */
+    background-size: cover;
     background-image: url(img/mine-ceil.png);
     border: 1px solid rgb(88, 88, 88);
 }
@@ -204,7 +200,7 @@ body {
     cursor: pointer;
     width: 18px;
     height: 18px;
-    /* background-color: red; */
+    background-size: cover;
     background-image: url(img/mine-death.png);
     border: 1px solid rgb(88, 88, 88);
 }
@@ -215,6 +211,7 @@ body {
     width: 16px;
     height: 16px;
     background-image: url('img/flag.png');
+    background-size: cover;
     border-left: 2px solid rgb(245, 245, 245);
     border-top: 2px solid rgb(245, 245, 245);
     border-right: 2px solid rgb(128, 128, 128);
@@ -226,6 +223,7 @@ body {
     cursor: pointer;
     width: 16px;
     height: 16px;
+    background-size: cover;
     background-image: url('img/question.png');
     border-left: 2px solid rgb(245, 245, 245);
     border-top: 2px solid rgb(245, 245, 245);
@@ -239,6 +237,7 @@ body {
     width: 16px;
     height: 16px;
     background-image: url('img/misFlagged.png');
+    background-size: cover;
     border-left: 2px solid rgb(245, 245, 245);
     border-top: 2px solid rgb(245, 245, 245);
     border-right: 2px solid rgb(128, 128, 128);
