@@ -139,11 +139,13 @@ body {
 #mine_left {
     width: 39px;
     margin-left: 5px;
+    background-color: black;
 }
 
 #time_used {
     width: 39px;
     margin-right: 5px;
+    background-color: black;
 }
 
 .mine_left {
