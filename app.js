@@ -46,18 +46,22 @@ var difficulty = {
         row: 9,
         column: 9,
         mine: 10
-    },
+    }, //初级
     2: {
         row: 16,
         column: 16,
         mine: 40
-    },
+    }, //中级
     3: {
         row: 16,
         column: 30,
         mine: 99
+    }, //高级
+    4: {
+        row: 0,
+        column: 0,
+        mine: 0
     }
-
 }
 
 function createMines(firstRow, firstColumn) {
@@ -386,4 +390,18 @@ function btnClick(clickRow, clickColumn) {
     if (win) {
         restartBtn.style.backgroundImage = "url(img/win.png)";
     }
+}
+
+function custom() {
+    var customWindow = document.getElementById("custom_window");
+    var rowNum = document.getElementById("row_number");
+    var columnNum = document.getElementById("column_number");
+    var mineNum = document.getElementById("mine_number");
+    difficultyNum = 4;
+    difficulty[4]['row'] = parseInt(rowNum.innerText);
+    difficulty[4]['column'] = parseInt(columnNum.innerText);
+    difficulty[4]['mine'] = parseInt(mineNum.innerText);
+    console.log(difficulty[4]);
+    customWindow.style.display = "none";
+    init(4);
 }

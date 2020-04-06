@@ -9,6 +9,38 @@
     <script src="app.js" defer=true></script>
     <!-- <script src="test.js" defer=true></script> -->
     <title>MineSweeper</title>
+    <script>
+        function initCustom() {
+            const customWindow = document.getElementById("custom_window");
+            customWindow.style.display = "inline";
+        }
+
+        function showRow() {
+            const rowRange = document.getElementById("row_range");
+            const rowNum = document.getElementById("row_number");
+            rowNum.innerHTML = rowRange.value;
+        }
+
+        function showColumn() {
+            const columnRange = document.getElementById("column_range");
+            const columnNum = document.getElementById("column_number");
+            columnNum.innerHTML = columnRange.value;
+        }
+
+        function showMine() {
+            const rowRange = document.getElementById("row_range");
+            const columnRange = document.getElementById("column_range");
+            const mineRange = document.getElementById("mine_range");
+            const mineNum = document.getElementById("mine_number");
+            mineRange.max = rowRange.value * columnRange.value - 1;
+            mineNum.innerHTML = mineRange.value;
+        }
+
+        function cancel() {
+            const customWindow = document.getElementById("custom_window");
+            customWindow.style.display = "none";
+        }
+    </script>
 </head>
 
 <body onload="main()">
@@ -19,6 +51,33 @@
             <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
         </svg>
     </a>
+    <div id="custom_window">
+        <div id="title">
+            <span>自定义</span>
+        </div>
+        <div id="custom">
+            <p>请选择行数、列数、雷数</p>
+            <div>
+                <span>行:</span>
+                <span><input type="range" id="row_range" min="9" max="16" step="1" value="9" onchange="showRow()"></span>
+                <span id="row_number">9</span>
+            </div>
+            <div>
+                <span>列:</span>
+                <span><input type="range" id="column_range" min="9" max="30" step="1" value="9" onchange="showColumn()"></span>
+                <span id="column_number">9</span>
+            </div>
+            <div>
+                <span>雷:</span>
+                <span><input type="range" id="mine_range" min="10" step="10" value="9" onchange="showMine()"></span>
+                <span id="mine_number">10</span>
+            </div>
+            <div>
+                <button onclick="custom()">确定</button>
+                <button onclick="cancel()">取消</button>
+            </div>
+        </div>
+    </div>
     <div id="game_window">
         <div id="title">
             <img src="/img/mine.png">
@@ -31,7 +90,7 @@
                         <div onclick="main(1)">初级</div>
                         <div onclick="main(2)">中级</div>
                         <div onclick="main(3)">高级</div>
-                        <div>自定义</div>
+                        <div onclick="initCustom()">自定义</div>
                     </div>
                 </span>
                 <span id="help">帮助</span>
