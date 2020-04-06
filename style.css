@@ -48,7 +48,7 @@ body {
     border: 5px solid rgb(15, 77, 184);
     border-radius: 8px 8px 0px 0px;
     z-index: 1000;
-    /* display: none; */
+    display: none;
 }
 
 #custom {
