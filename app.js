@@ -87,6 +87,7 @@ function createBlocks() {
             block[i][j].className = "block";
             block[i][j].style.left = String(blockLeft) + "px";
             block[i][j].style.top = String(blockTop) + "px";
+            block[i][j].click = false;
             block[i][j].addEventListener("click", (() => {
                 if (rightDown) return;
                 if (first) {
@@ -256,7 +257,7 @@ function gameWin() {
     for (let i = 1; i <= mapRow; ++i) {
         for (let j = 1; j <= mapColumn; ++j) {
             if (number[i][j] === 9) continue;
-            else if (block[i][j].className != "under_block") return false;
+            else if (!block[i][j].click) return false;
         }
     }
     return true;
@@ -310,6 +311,7 @@ function leftBtnClick(row, column) {
     } //左键点击雷
     else {
         block[row][column].className = "under_block"; //左键点击安全格
+        block[row][column].click = true;
         if (number[row][column] === 0) {
             searchResult[row][column] = 1;
             searchZero(row, column)
@@ -347,7 +349,7 @@ function btnClick(clickRow, clickColumn) {
                     }
                 }
             }
-            console.log(unknownBlock)
+            // console.log(unknownBlock)
             if (number[clickRow][clickColumn] != 9 && number[clickRow][clickColumn] != 0 && block[clickRow][clickColumn].className === "under_block") {
                 for (let i = clickRow - 1; i <= clickRow + 1; ++i) {
                     for (let j = clickColumn - 1; j <= clickColumn + 1; ++j) {
