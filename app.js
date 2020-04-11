@@ -281,7 +281,7 @@ function displayMineLeft() {
     digit[2] = parseInt(mineLeft % 10);
     for (let i = 0; i < 3; ++i) {
         digitImg = document.createElement('img');
-        digitImg.src = "/img/digit" + digit[i] + ".png";
+        digitImg.src = "img/digit" + digit[i] + ".png";
         digitImg.className = "mine_left";
         mineLeftDisplay.appendChild(digitImg);
     }
@@ -298,7 +298,7 @@ function displayTimeUsed() {
     } else digit = [9, 9, 9];
     for (let i = 2; i >= 0; --i) {
         digitImg = document.createElement('img');
-        digitImg.src = "/img/digit" + digit[i] + ".png";
+        digitImg.src = "img/digit" + digit[i] + ".png";
         digitImg.className = "time_used";
         timeUsedDisplay.appendChild(digitImg);
     }
@@ -316,7 +316,7 @@ function leftBtnClick(row, column) {
             searchResult[row][column] = 1;
             searchZero(row, column)
         } else {
-            block[row][column].style.backgroundImage = "url(/img/open" + number[row][column] + ".png)";
+            block[row][column].style.backgroundImage = "url(img/open" + number[row][column] + ".png)";
         }
     }
 }
