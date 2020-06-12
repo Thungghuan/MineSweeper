@@ -327,13 +327,20 @@ function rightBtnClick(row, column) {
     for (let index = 0; index < rightBtnStyle.length; ++index) {
         if (block[row][column].className === rightBtnStyle[index]) blockStyle = index;
     }
-    block[row][column].className = rightBtnStyle[(blockStyle + 1) % 3];
+    // if (mineLeft > 0) block[row][column].className = rightBtnStyle[(blockStyle + 1) % 3];
+    // else block[row][column].className = blockStyle == 0 ? rightBtnStyle[2] : rightBtnStyle [0];
     if (blockStyle === 0) {
         if (mineLeft > 0) {
             --mineLeft;
+            block[row][column].className = rightBtnStyle[1];
         }
+        else block[row][column].className = rightBtnStyle[2];
     } else if (blockStyle === 1) {
         ++mineLeft;
+        block[row][column].className = rightBtnStyle[2];
+    }
+    else {
+        block[row][column].className = rightBtnStyle[0];
     }
 }
 
